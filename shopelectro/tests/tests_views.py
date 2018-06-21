@@ -53,8 +53,8 @@ def json_to_dict(response: HttpResponse) -> dict():
     return json.loads(response.content)
 
 
-class CatalogPage(TestCase):
-    """ @todo #302 Divide the CatalogPage test class into parts related to the features."""
+
+class BaseCatalogTestCase(TestCase):
 
     fixtures = ['dump.json']
 
@@ -73,6 +73,8 @@ class CatalogPage(TestCase):
         return self.client.get(reverse_catalog_url(
             'category', {'slug': category.page.slug}, tags, sorting, query_string,
         ))
+
+class CatalogTags(BaseCatalogTestCase):
 
     def test_category_page_contains_all_tags(self):
         """Category contains all Product's tags."""
@@ -191,6 +193,8 @@ class CatalogPage(TestCase):
         response = self.client.get(product.url)
         for link in property_links:
             self.assertContains(response, link)
+
+class CatalogPagination(BaseCatalogTestCase):
 
     def test_pagination_numbering(self):
         page_number = 1
